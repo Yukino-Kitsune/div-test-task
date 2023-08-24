@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApplicationResolved;
 use App\Models\Application;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 
@@ -56,6 +57,15 @@ class ApplicationController extends Controller
                 'message' => $exception->getMessage()
             ];
         }
+        try {
+            Mail::to($app->email)->send(new ApplicationResolved($app));
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ];
+        }
+
         return [
             'status' => 'successful'
         ];
