@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Application extends Model
 {
@@ -19,4 +20,9 @@ class Application extends Model
         return ApplicationFactory::new();
     }
 
+    public static function getApps(string $sortField = 'id', string $sortDirection = 'asc'){
+        return DB::table('applications')
+                ->orderBy($sortField, $sortDirection)
+                ->get();
+    }
 }

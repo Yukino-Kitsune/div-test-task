@@ -19,7 +19,10 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::get('/requests', [ApplicationController::class, 'index']);
+//Route::get('/requests', [ApplicationController::class, 'index']);
+Route::get('/requests', function (Request $request){
+    return response()->json(ApplicationController::index($request));
+});
 Route::post('/requests', function (Request $request){
     return response()->json(ApplicationController::store($request));
 });
