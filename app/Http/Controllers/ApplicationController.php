@@ -16,7 +16,8 @@ class ApplicationController extends Controller
         try {
             $validated = $request->validate([
                 'sortby' => 'in:name,email,status,created_at,updated_at',
-                'sortdir' => 'in:asc,desc'
+                'sortdir' => 'in:asc,desc',
+                'status' => 'in:active,resolved'
             ]);
         } catch (ValidationException $exception) {
             return [
@@ -26,6 +27,9 @@ class ApplicationController extends Controller
         }
         $sortDirectory = $request->get('sortdir') != null ? $request->get('sortdir') : 'asc';
         $sortField = $request->get('sortby') != null ? $request->get('sortby') : 'id';
+        if($request->get('status') != null) {
+            return Application::getFilteredApps($request->get('status'), $sortField, $sortDirectory);
+        }
         return Application::getApps($sortField, $sortDirectory);
     }
 

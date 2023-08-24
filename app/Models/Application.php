@@ -25,4 +25,10 @@ class Application extends Model
                 ->orderBy($sortField, $sortDirection)
                 ->get();
     }
+    public static function getFilteredApps(string $status, string $sortField = 'id', string $sortDirection = 'asc') {
+        return DB::table('applications')
+            ->where('status', '=', $status)
+            ->orderBy($sortField, $sortDirection)
+            ->get();
+    }
 }
