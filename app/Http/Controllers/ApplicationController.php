@@ -18,15 +18,18 @@ class ApplicationController extends Controller
     public static function update(Request $request, int $id)
     {
         $app = Application::find($id);
-        $comment = $request->comment;
-        if($comment == null || $comment == '') {
+        try {
+            $validated = $request->validate([
+                'comment' => 'required|max:255'
+            ]);
+        } catch (ValidationException $exception) {
             return [
                 'status' => 'error',
-                'message' => 'comment is null or empty'
+                'message' => $exception->getMessage()
             ];
         }
         $app->status = 'Resolved';
-        $app->comment = $comment;
+        $app->comment = $request->comment;
         try {
             $app->save();
         } catch (QueryException $exception){
@@ -43,15 +46,13 @@ class ApplicationController extends Controller
     public static function store(Request $request)
     {
         $app = new Application();
-        // TODO add form validate
         try {
             $validated = $request->validate([
                 'name' => 'required|max:255',
                 'email' => 'required|email:rfc|max:255',
                 'message' => 'required|max:255'
             ]);
-        } catch (ValidationException $exception)
-        {
+        } catch (ValidationException $exception) {
             return [
                 'status' => 'error',
                 'message' => $exception->getMessage()
@@ -60,8 +61,6 @@ class ApplicationController extends Controller
         $app->name = $request->name;
         $app->email = $request->email;
         $app->message = $request->message;
-        $app->status = 'Active'; // TODO Сделать active дефолтным значением
-        $app->comment = ''; // TODO Сделать поле nullable
         try {
             $app->save();
         } catch (QueryException $exception){
